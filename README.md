@@ -39,3 +39,16 @@ rm filename.txt
 # Remove a directory
 rm -r directory_name
 ```
+### User and Group Management
+
+# Add a new user
+sudo adduser username
+
+# Delete a user
+sudo deluser username
+
+# Add user to a group
+sudo usermod -aG groupname username
+
+# Change file ownership
+sudo chown user:group filename
