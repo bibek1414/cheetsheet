@@ -7,10 +7,6 @@ A comprehensive cheat sheet covering **Linux, GitHub, Docker, Django, Python, Ja
 - [Git & GitHub](#git--github)
 - [Docker](#docker)
 - [Django](#django)
-- [Python](#python)
-- [JavaScript](#javascript)
-- [React](#react)
-- [Next.js](#nextjs)
 
 ---
 
@@ -93,76 +89,33 @@ docker-compose down    # Stop containers
 docker-compose logs    # View logs
 ```
 
----
-
-## 🎯 Django
-### 🔹 Basic Django Commands
-```bash
-django-admin startproject project_name  # Start a Django project
-python manage.py startapp app_name  # Create a new app
-python manage.py runserver  # Run Django server
-python manage.py makemigrations  # Create migrations
-python manage.py migrate  # Apply migrations
+```
+1  sudo apt update
+    2  docker --version
+    3  sudo apt install docker.io -y
+    4  docker --version
+    5  sudo systemctl status docker
+    6  docker run hello-world
+    7  sudo usermod -aG docker ubuntu
+    8  docker run hello-world
+    9  logout
+   10  docker -version
+   11  docker run hello-world
+   12  git clone https://github.com/iam-veeramalla/Docker-Zero-to-Hero.git
+   13  ls
+   14  cd Docker-Zero-to-Hero/
+   15  ls
+   16  cd exm
+   17  cd examples/
+   18  ls
+   19  cd first-docker-file/
+   20  ls
+   21  vim Dockerfile
+   22  docker build -t hello .
+   23  docker run -it hello
+   24  history
 ```
 
----
 
-## 🐍 Python
-### 🔹 Basic Python Commands
-```python
-print("Hello, World!")  # Print to console
-x = input("Enter something: ")  # Get user input
-for i in range(5):  # Loop example
-    print(i)
-def add(a, b):  # Function example
-    return a + b
-```
 
----
 
-## ⚡ JavaScript
-### 🔹 Basic JavaScript
-```js
-console.log("Hello, World!");
-let name = "John";
-const PI = 3.14;
-function add(a, b) {
-    return a + b;
-}
-```
-
-### 🔹 Async & Fetch API
-```js
-async function getData() {
-    let response = await fetch('https://api.example.com/data');
-    let data = await response.json();
-    console.log(data);
-}
-```
-
----
-
-## ⚛️ React
-### 🔹 Basic React Component
-```jsx
-import React from 'react';
-
-function Hello() {
-    return <h1>Hello, World!</h1>;
-}
-export default Hello;
-```
-
----
-
-## 🚀 Next.js
-### 🔹 API Routes
-```js
-export default function handler(req, res) {
-    res.status(200).json({ message: "Hello from Next.js API!" });
-}
-```
-
----
-
-🚀 **This cheat sheet covers all the basic and advanced commands you need!** 🎯
