@@ -115,6 +115,12 @@ docker-compose logs    # View logs
    23  docker run -it hello
    24  history
 ```
+# DOcker pull
+```
+  906  docker pull bibek1414/expensetracker
+  907  docker run -d -p 8000:8000 bibek1414/expensetracker:latest\n
+```
+
 
 
 
