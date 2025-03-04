@@ -327,24 +327,58 @@ docker run --network=none  # No network access
 - Review Docker network logs
 
 ## 🔧 Practical Example Workflow
-```bash
-# Create a comprehensive network setup
-docker network create myapp-network
 
-# Run multiple containers on network
-docker run -d --name web \
-  --network myapp-network \
-  -p 8080:80 \
-  nginx:latest
+# Docker Networking Commands Log
 
-docker run -d --name api \
-  --network myapp-network \
-  backend-api:latest
+## Commands Executed
 
-docker run -d --name db \
-  --network myapp-network \
-  postgres:latest
+```sh
+cd Docker-Zero-to-Hero
+ls
+cd examples
+git remote -v
+ls
+docker run -d --name login nginx:latest
+docker exec -it login /bin/bash
+docker run -d --name logout nginx:latest
+docker exec -it login /bin/bash
+z devops
+cd Docker-Zero-to-Hero
+cd examples
+docker inspect login
+docker inspect logout
+docker network ls
+docker network ls
+docker network create secure-network
+docker network ls
+docker run -d --name --network secure-network nginx:latest
+docker run -d --name finance --network=secure-network nginx:latest
+docker s
+dockerps
+docker ps
+docker inspect finance
+ls
+history
+docker exec -it login /bin/bash
+docker ps
+clear
+docker run -d --name host-demo --network=host nginx:latest
+docker inspect host-demo
+history
+docker exec -it login /bin/bash
+docker stop $(docker ps -q)
+docker rm $(docker ps -a -q)
 ```
+
+## Summary
+
+- Created and managed Docker containers (`login`, `logout`, `finance`, `host-demo`).
+- Created and listed Docker networks (`secure-network`).
+- Inspected containers and networks.
+- Ran containers with specific networks.
+- Stopped and removed all containers.
+
+This log can be used as a reference for Docker networking commands.
 
 ## 💥 Common Pitfalls to Avoid
 - Using default bridge for production
