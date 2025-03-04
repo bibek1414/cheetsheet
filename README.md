@@ -1,12 +1,11 @@
 # 📌 Developer Cheat Sheet (Linux, GitHub, Docker, Django, Python, JavaScript, React, Next.js)
 
-A comprehensive cheat sheet covering **Linux, GitHub, Docker, Django, Python, JavaScript, React, Next.js**, and more. **Copy-paste ready commands** from **basic to advanced**.
+A comprehensive cheat sheet covering **Linux, GitHub, Docker**, and more. **Copy-paste ready commands** from **basic to advanced**.
 
 ## 📌 Table of Contents
 - [Linux Commands](#linux-commands)
 - [Git & GitHub](#git--github)
 - [Docker](#docker)
-- [Django](#django)
 
 ---
 
@@ -120,6 +119,73 @@ docker-compose logs    # View logs
   906  docker pull bibek1414/expensetracker
   907  docker run -d -p 8000:8000 bibek1414/expensetracker:latest\n
 ```
+# Docker Commands Cheat Sheet
+
+## **Docker Volume Commands**
+```sh
+# Create a new volume
+docker volume create bibek
+
+# List all volumes
+docker volume ls
+
+# Inspect a volume
+docker volume inspect bibek
+
+# Remove a volume
+docker volume rm bibek
+```
+
+## **Docker Image Commands**
+```sh
+# List images (only first 5 lines)
+docker images | head -5
+
+# Build an image using Dockerfile in the current directory
+docker build .
+```
+
+## **Docker Container Commands**
+```sh
+# Run a container with a named volume
+# (Make sure there is no space after the comma in --mount)
+docker run -d --mount source=bibek,target=/app a04dc4851cbc
+
+# Run a container with Nginx using a named volume
+docker run -d --mount source=bibek,target=/app nginx:latest
+
+# List running containers
+docker ps
+
+# List all containers (including stopped ones)
+docker ps -a
+
+# View logs of a specific container
+docker logs <container_id>
+```
+
+## **Common Errors & Fixes**
+- **Incorrect syntax for `--mount`**:
+  ```sh
+  # Wrong:
+  docker run -d --mount source=bibek , targer=/app a04dc4851cbc
+  
+  # Correct:
+  docker run -d --mount source=bibek,target=/app a04dc4851cbc
+  ```
+- **Mistyped commands (e.g., `dockerps` instead of `docker ps`)** → Ensure correct spelling.
+
+---
+### **Tips**
+✅ Use `-v` instead of `--mount` for simpler volume mounts:  
+```sh
+docker run -d -v bibek:/app a04dc4851cbc
+```
+✅ If the container exits immediately, use:
+```sh
+docker run -it --mount source=bibek,target=/app a04dc4851cbc /bin/sh
+```
+
 
 
 
