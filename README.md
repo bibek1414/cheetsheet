@@ -190,6 +190,158 @@ docker logs <container_id>
   # Correct:
   docker run -d --mount source=bibek,target=/app a04dc4851cbc
   ```
+
+
+  # Docker Networking Cheatsheet
+
+## Basic Network Commands
+
+### List Docker Networks
+```bash
+docker network ls
+```
+
+### Create a Custom Network
+```bash
+docker network create [network-name]
+```
+Example:
+```bash
+docker network create secure-network
+```
+
+## Network Types
+
+### 1. Bridge Network (Default)
+- Default network when no network is specified
+- Containers can communicate with each other
+- NAT used for external communication
+```bash
+# Run container on default bridge network
+docker run -d --name mycontainer nginx:latest
+```
+
+### 2. Host Network
+- Removes network isolation between container and host
+- Uses host's network directly
+```bash
+docker run -d --name host-demo --network=host nginx:latest
+```
+
+### 3. Custom Bridge Network
+- Better isolation and automatic DNS resolution
+- Containers can communicate by container names
+```bash
+# Create custom network
+docker network create myapp-network
+
+# Run containers on custom network
+docker run -d --name webapp --network=myapp-network nginx:latest
+docker run -d --name database --network=myapp-network mysql:latest
+```
+
+## Network Inspection
+
+### Inspect Network Details
+```bash
+docker network inspect [network-name]
+```
+Example:
+```bash
+docker network inspect bridge
+```
+
+### Inspect Container Network
+```bash
+docker inspect [container-name]
+```
+
+## Networking Management
+
+### Connect Container to Network
+```bash
+docker network connect [network-name] [container-name]
+```
+
+### Disconnect Container from Network
+```bash
+docker network disconnect [network-name] [container-name]
+```
+
+## Advanced Networking
+
+### Create Network with Specific Subnet
+```bash
+docker network create --subnet=192.168.0.0/16 custom-subnet-network
+```
+
+### Limit Network Bandwidth
+```bash
+docker run --network-alias=web --net-alias=api \
+  --network-driver=bridge \
+  --network-opt com.docker.network.driver.mtu=1450 \
+  myimage
+```
+
+## Troubleshooting Network Connectivity
+
+### Install Ping in Container
+```bash
+# Inside container
+apt-get update
+apt-get install iputils-ping -y
+```
+
+### Test Connectivity
+```bash
+# From within a container
+ping [container-ip-or-name]
+```
+
+## Best Practices
+1. Use custom bridge networks for better isolation
+2. Avoid using host network except for specific performance needs
+3. Use network aliases for service discovery
+4. Be mindful of security when configuring networks
+
+## Common Network-Related Docker Commands
+```bash
+# List running containers
+docker ps
+
+# List all networks
+docker network ls
+
+# Create a network
+docker network create [name]
+
+# Inspect network
+docker network inspect [name]
+
+# Connect container to network
+docker network connect [network] [container]
+
+# Disconnect container from network
+docker network disconnect [network] [container]
+```
+
+## Security Considerations
+- Use `--icc=false` to disable inter-container communication
+- Implement network segmentation
+- Use user-defined bridge networks
+- Avoid using the default bridge network for production
+
+## Example Workflow
+```bash
+# Create a custom network
+docker network create myapp-network
+
+# Run containers on the network
+docker run -d --name web --network myapp-network nginx
+docker run -d --name db --network myapp-network mysql
+
+# Containers can now communicate by name
+```
 - **Mistyped commands (e.g., `dockerps` instead of `docker ps`)** → Ensure correct spelling.
 
 ---
