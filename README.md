@@ -148,30 +148,7 @@ docker run -v /host/path:/container/path container_name
 ---
 
 ## 🌐 Docker Networking
-### 🔹 Network Types
-```bash
-# List networks
-docker network ls
-
-# Create a custom network
-docker network create mynetwork
-
-# Connect container to network
-docker network connect mynetwork container_name
-```
-
-### 🔹 Network Inspection
-```bash
-# Inspect network details
-docker network inspect bridge
-
-# Inspect container network
-docker inspect container_name
-```
-# 🌐 Docker Networking Cheat Sheet
-
 ## 🔍 Basic Network Commands
-
 ### List Docker Networks
 ```bash
 # List all networks
