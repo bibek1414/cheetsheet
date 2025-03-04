@@ -1,11 +1,18 @@
-# 📌 Developer Cheat Sheet (Linux, GitHub, Docker, Django, Python, JavaScript, React, Next.js)
+# 📌 Comprehensive Developer Cheat Sheet
 
-A comprehensive cheat sheet covering **Linux, GitHub, Docker**, and more. **Copy-paste ready commands** from **basic to advanced**.
+A comprehensive guide covering Linux, GitHub, Docker, Django, Python, JavaScript, React, Next.js, and more. **Copy-paste ready commands** from **basic to advanced**.
 
 ## 📌 Table of Contents
-- [Linux Commands](#linux-commands)
-- [Git & GitHub](#git--github)
-- [Docker](#docker)
+- [Linux Commands](#-linux-commands)
+- [Git & GitHub](#-git--github)
+- [Docker](#-docker)
+- [Docker Volumes](#-docker-volumes)
+- [Docker Networking](#-docker-networking)
+- [Python](#-python)
+- [Django](#-django)
+- [JavaScript](#-javascript)
+- [React](#-react)
+- [Next.js](#-nextjs)
 
 ---
 
@@ -43,6 +50,20 @@ ping google.com  # Check network connectivity
 netstat -tulnp   # Show listening ports
 ```
 
+### 🔹 File Permissions
+```bash
+chmod 755 file    # Change file permissions
+chown user:group file  # Change file owner
+```
+
+### 🔹 System Information
+```bash
+uname -a          # Print system information
+df -h             # Disk space usage
+free -h           # Memory usage
+lscpu             # CPU information
+```
+
 ---
 
 ## 🔗 Git & GitHub
@@ -65,6 +86,14 @@ git reset --hard HEAD  # Reset changes
 git stash         # Stash changes
 git rebase branch  # Rebase branch
 git cherry-pick commit_id  # Pick specific commit
+git log --graph --oneline  # Visualize commit history
+```
+
+### 🔹 Git Configuration
+```bash
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+git config --list  # Show current configuration
 ```
 
 ---
@@ -86,272 +115,469 @@ docker rmi image_id  # Remove an image
 docker-compose up -d   # Start containers
 docker-compose down    # Stop containers
 docker-compose logs    # View logs
+docker-compose build   # Build or rebuild services
 ```
 
-```
-1  sudo apt update
-    2  docker --version
-    3  sudo apt install docker.io -y
-    4  docker --version
-    5  sudo systemctl status docker
-    6  docker run hello-world
-    7  sudo usermod -aG docker ubuntu
-    8  docker run hello-world
-    9  logout
-   10  docker -version
-   11  docker run hello-world
-   12  git clone https://github.com/iam-veeramalla/Docker-Zero-to-Hero.git
-   13  ls
-   14  cd Docker-Zero-to-Hero/
-   15  ls
-   16  cd exm
-   17  cd examples/
-   18  ls
-   19  cd first-docker-file/
-   20  ls
-   21  vim Dockerfile
-   22  docker build -t hello .
-   23  docker run -it hello
-   24  history
-```
-# DOcker pull
-```
-  906  docker pull bibek1414/expensetracker
-  907  docker run -d -p 8000:8000 bibek1414/expensetracker:latest\n
-```
+---
 
-
-# Docker Commands Cheat Sheet
-
-## **Docker Volume Commands**
-```sh
+## 🗃️ Docker Volumes
+### 🔹 Volume Management
+```bash
 # Create a new volume
-docker volume create bibek
+docker volume create myvolume
 
 # List all volumes
 docker volume ls
 
 # Inspect a volume
-docker volume inspect bibek
+docker volume inspect myvolume
 
 # Remove a volume
-docker volume rm bibek
+docker volume rm myvolume
 ```
 
-## **Steps to Remove a Docker Volume in Use**
-```sh
-# Check running/stopped containers
-docker ps -a
+### 🔹 Volume Mounting
+```bash
+# Mount a volume
+docker run -v myvolume:/app container_name
 
-# Stop the container using the volume
-docker stop <container_id>
-
-# Remove the container
-docker rm <container_id>
-
-# Remove the volume
-docker volume rm <volume_name>
+# Bind mount
+docker run -v /host/path:/container/path container_name
 ```
 
-## **Docker Image Commands**
-```sh
-# List images (only first 5 lines)
-docker images | head -5
+---
 
-# Build an image using Dockerfile in the current directory
-docker build .
+## 🌐 Docker Networking
+### 🔹 Network Types
+```bash
+# List networks
+docker network ls
+
+# Create a custom network
+docker network create mynetwork
+
+# Connect container to network
+docker network connect mynetwork container_name
 ```
 
-## **Docker Container Commands**
-```sh
-# Run a container with a named volume
-# (Make sure there is no space after the comma in --mount)
-docker run -d --mount source=bibek,target=/app a04dc4851cbc
+### 🔹 Network Inspection
+```bash
+# Inspect network details
+docker network inspect bridge
 
-# Run a container with Nginx using a named volume
-docker run -d --mount source=bibek,target=/app nginx:latest
-
-# List running containers
-docker ps
-
-# List all containers (including stopped ones)
-docker ps -a
-
-# View logs of a specific container
-docker logs <container_id>
+# Inspect container network
+docker inspect container_name
 ```
+# 🌐 Docker Networking Cheat Sheet
 
-## **Common Errors & Fixes**
-- **Incorrect syntax for `--mount`**:
-  ```sh
-  # Wrong:
-  docker run -d --mount source=bibek , targer=/app a04dc4851cbc
-  
-  # Correct:
-  docker run -d --mount source=bibek,target=/app a04dc4851cbc
-  ```
-
-
-  # Docker Networking Cheatsheet
-
-## Basic Network Commands
+## 🔍 Basic Network Commands
 
 ### List Docker Networks
 ```bash
+# List all networks
 docker network ls
+
+# Detailed network information
+docker network ls -q  # List network IDs
+docker network ls --filter "driver=bridge"  # Filter by driver
 ```
 
-### Create a Custom Network
-```bash
-docker network create [network-name]
-```
-Example:
-```bash
-docker network create secure-network
-```
+## 🌉 Network Types in Depth
 
-## Network Types
-
-### 1. Bridge Network (Default)
+### 1. Bridge Network (Default Network)
+#### Characteristics
 - Default network when no network is specified
-- Containers can communicate with each other
-- NAT used for external communication
+- Allows containers to communicate internally
+- Uses Network Address Translation (NAT) for external communication
+- Automatically creates a bridge0 interface
+
 ```bash
 # Run container on default bridge network
 docker run -d --name mycontainer nginx:latest
+
+# Inspect default bridge network
+docker network inspect bridge
+
+# List containers on bridge network
+docker network inspect bridge | grep -A 10 Containers
 ```
+
+#### Network Details
+- Subnet: Typically 172.17.0.0/16
+- Gateway: Usually 172.17.0.1
+- DHCP-like IP assignment for containers
 
 ### 2. Host Network
+#### Characteristics
 - Removes network isolation between container and host
-- Uses host's network directly
+- Uses host's network stack directly
+- No network namespace separation
+- Highest performance, but least secure
+
 ```bash
-docker run -d --name host-demo --network=host nginx:latest
+# Run container directly on host network
+docker run -d --name host-demo \
+  --network=host \
+  nginx:latest
+
+# Verify network mode
+docker inspect host-demo | grep -i networkmode
 ```
 
+#### Use Cases
+- High-performance networking
+- Network monitoring tools
+- When you need direct host network access
+
 ### 3. Custom Bridge Network
-- Better isolation and automatic DNS resolution
+#### Advantages
+- Better isolation
+- Automatic DNS resolution
 - Containers can communicate by container names
+- More secure than default bridge
+
 ```bash
 # Create custom network
 docker network create myapp-network
 
 # Run containers on custom network
-docker run -d --name webapp --network=myapp-network nginx:latest
-docker run -d --name database --network=myapp-network mysql:latest
-```
+docker run -d --name webapp \
+  --network=myapp-network \
+  nginx:latest
 
-## Network Inspection
-
-### Inspect Network Details
-```bash
-docker network inspect [network-name]
-```
-Example:
-```bash
-docker network inspect bridge
-```
-
-### Inspect Container Network
-```bash
-docker inspect [container-name]
-```
-
-## Networking Management
-
-### Connect Container to Network
-```bash
-docker network connect [network-name] [container-name]
-```
-
-### Disconnect Container from Network
-```bash
-docker network disconnect [network-name] [container-name]
-```
-
-## Advanced Networking
-
-### Create Network with Specific Subnet
-```bash
-docker network create --subnet=192.168.0.0/16 custom-subnet-network
-```
-
-### Limit Network Bandwidth
-```bash
-docker run --network-alias=web --net-alias=api \
-  --network-driver=bridge \
-  --network-opt com.docker.network.driver.mtu=1450 \
-  myimage
-```
-
-## Troubleshooting Network Connectivity
-
-### Install Ping in Container
-```bash
-# Inside container
-apt-get update
-apt-get install iputils-ping -y
-```
-
-### Test Connectivity
-```bash
-# From within a container
-ping [container-ip-or-name]
-```
-
-## Best Practices
-1. Use custom bridge networks for better isolation
-2. Avoid using host network except for specific performance needs
-3. Use network aliases for service discovery
-4. Be mindful of security when configuring networks
-
-## Common Network-Related Docker Commands
-```bash
-# List running containers
-docker ps
-
-# List all networks
-docker network ls
-
-# Create a network
-docker network create [name]
-
-# Inspect network
-docker network inspect [name]
-
-# Connect container to network
-docker network connect [network] [container]
-
-# Disconnect container from network
-docker network disconnect [network] [container]
-```
-
-## Security Considerations
-- Use `--icc=false` to disable inter-container communication
-- Implement network segmentation
-- Use user-defined bridge networks
-- Avoid using the default bridge network for production
-
-## Example Workflow
-```bash
-# Create a custom network
-docker network create myapp-network
-
-# Run containers on the network
-docker run -d --name web --network myapp-network nginx
-docker run -d --name db --network myapp-network mysql
+docker run -d --name database \
+  --network=myapp-network \
+  mysql:latest
 
 # Containers can now communicate by name
+docker exec webapp ping database
 ```
-- **Mistyped commands (e.g., `dockerps` instead of `docker ps`)** → Ensure correct spelling.
+
+## 🔍 Network Inspection
+
+### Detailed Network Inspection
+```bash
+# Inspect network details
+docker network inspect [network-name]
+
+# Inspect specific network properties
+docker network inspect bridge -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}'
+
+# Inspect container network details
+docker inspect [container-name] | grep -i network
+```
+
+## 🛠 Networking Management
+
+### Advanced Network Operations
+```bash
+# Connect container to additional network
+docker network connect [network-name] [container-name]
+
+# Disconnect container from network
+docker network disconnect [network-name] [container-name]
+
+# Create network with specific configuration
+docker network create \
+  --driver bridge \
+  --subnet 192.168.0.0/16 \
+  --gateway 192.168.0.1 \
+  custom-network
+```
+
+## 🚀 Advanced Networking
+
+### Network Configuration
+```bash
+# Create network with specific MTU
+docker network create \
+  --driver bridge \
+  --opt com.docker.network.driver.mtu=1450 \
+  limited-network
+
+# Set network aliases
+docker run -d --name web \
+  --network-alias=myapp \
+  --network myapp-network \
+  nginx:latest
+```
+
+## 🔬 Troubleshooting Network Connectivity
+
+### Connectivity Tools
+```bash
+# Install network tools in container
+docker exec -it container_name /bin/bash
+apt-get update
+apt-get install -y iputils-ping net-tools
+
+# Test connectivity
+ping other-container-name
+traceroute other-container-name
+netstat -tuln  # List listening ports
+```
+
+## 🛡️ Security Considerations
+
+### Network Security Best Practices
+```bash
+# Disable inter-container communication
+docker network create \
+  --opt com.docker.network.bridge.enable_icc=false \
+  secure-network
+
+# Limit network access
+docker run --network=none  # No network access
+```
+
+## 💡 Best Practices
+1. Use custom bridge networks for better isolation
+2. Avoid host network in production
+3. Implement network segmentation
+4. Use network aliases for service discovery
+5. Regularly audit network configurations
+
+## 📊 Performance Optimization
+- Minimize network hops
+- Use host network for performance-critical apps
+- Implement efficient routing
+- Monitor network performance
+
+## 🚨 Common Troubleshooting
+- Check network configuration
+- Verify container network settings
+- Test connectivity between containers
+- Review Docker network logs
+
+## 🔧 Practical Example Workflow
+```bash
+# Create a comprehensive network setup
+docker network create myapp-network
+
+# Run multiple containers on network
+docker run -d --name web \
+  --network myapp-network \
+  -p 8080:80 \
+  nginx:latest
+
+docker run -d --name api \
+  --network myapp-network \
+  backend-api:latest
+
+docker run -d --name db \
+  --network myapp-network \
+  postgres:latest
+```
+
+## 💥 Common Pitfalls to Avoid
+- Using default bridge for production
+- Neglecting network security
+- Overlooking network performance
+- Incorrect port mappings
+- Lack of network monitoring
+
+## 📚 Recommended Learning
+- Docker official networking documentation
+- Network troubleshooting guides
+- Container networking best practices
+- Performance optimization techniques
+---
+
+## 🐍 Python
+### 🔹 Virtual Environments
+```bash
+# Create virtual environment
+python3 -m venv myenv
+
+# Activate virtual environment
+source myenv/bin/activate  # Linux/Mac
+myenv\Scripts\activate     # Windows
+
+# Deactivate
+deactivate
+```
+
+### 🔹 Package Management
+```bash
+pip install package_name   # Install a package
+pip freeze > requirements.txt  # Export dependencies
+pip install -r requirements.txt  # Install from requirements
+```
+
+### 🔹 Python Basics
+```python
+# List comprehension
+[x**2 for x in range(10)]
+
+# Lambda function
+multiply = lambda x, y: x * y
+
+# Decorators
+def my_decorator(func):
+    def wrapper():
+        print("Before function")
+        func()
+        print("After function")
+    return wrapper
+```
 
 ---
-### **Tips**
-✅ Use `-v` instead of `--mount` for simpler volume mounts:  
-```sh
-docker run -d -v bibek:/app a04dc4851cbc
-```
-✅ If the container exits immediately, use:
-```sh
-docker run -it --mount source=bibek,target=/app a04dc4851cbc /bin/sh
+
+## 🌐 Django
+### 🔹 Project Setup
+```bash
+# Install Django
+pip install django
+
+# Create new project
+django-admin startproject myproject
+cd myproject
+
+# Create app
+python manage.py startapp myapp
+
+# Run migrations
+python manage.py makemigrations
+python manage.py migrate
+
+# Run development server
+python manage.py runserver
 ```
 
+### 🔹 Django Models
+```python
+from django.db import models
+
+class MyModel(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+```
+
+---
+
+## 📜 JavaScript
+### 🔹 ES6+ Features
+```javascript
+// Arrow functions
+const multiply = (a, b) => a * b;
+
+// Destructuring
+const { name, age } = person;
+
+// Spread operator
+const newArray = [...oldArray, newItem];
+
+// Promises
+fetch(url)
+    .then(response => response.json())
+    .catch(error => console.error(error));
+
+// Async/Await
+async function fetchData() {
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+    } catch (error) {
+        console.error(error);
+    }
+}
+```
+
+---
+
+## ⚛️ React
+### 🔹 Component Types
+```jsx
+// Functional Component
+function MyComponent() {
+    return <div>Hello World</div>;
+}
+
+// Class Component
+class MyClassComponent extends React.Component {
+    render() {
+        return <div>Hello World</div>;
+    }
+}
+
+// Hooks
+function HookComponent() {
+    const [count, setCount] = useState(0);
+    return <div>{count}</div>;
+}
+```
+
+### 🔹 React Hooks
+```jsx
+// useState
+const [state, setState] = useState(initialValue);
+
+// useEffect
+useEffect(() => {
+    // Side effect code
+    return () => {
+        // Cleanup code
+    };
+}, [dependencies]);
+
+// useContext
+const value = useContext(MyContext);
+```
+
+---
+
+## 🔀 Next.js
+### 🔹 Routing
+```jsx
+// Page-based routing
+pages/index.js       # Route: /
+pages/about.js       # Route: /about
+pages/users/[id].js  # Dynamic route
+
+// API Routes
+pages/api/users.js   # API endpoint: /api/users
+```
+
+### 🔹 Server-Side Rendering
+```jsx
+export async function getServerSideProps(context) {
+    const res = await fetch('https://api.example.com/data');
+    const data = await res.json();
+    
+    return {
+        props: { data }, // Will be passed to the page component as props
+    }
+}
+```
+
+---
+
+## 💡 Best Practices & Tips
+- Always use virtual environments in Python
+- Follow PEP 8 guidelines for Python
+- Use TypeScript with React for type safety
+- Implement proper error handling in async operations
+- Use environment variables for sensitive information
+- Keep dependencies updated
+- Write unit tests for your code
+- Use linters and formatters
+
+---
+
+## 🔒 Security Considerations
+- Never commit sensitive information to version control
+- Use HTTPS for all web communications
+- Implement proper authentication and authorization
+- Sanitize and validate user inputs
+- Keep all software and dependencies updated
+- Use security headers in web applications
+
+---
+
+## 📚 Recommended Learning Resources
+- MDN Web Docs
+- freeCodeCamp
+- Coursera
+- Udemy
+- Official documentation for each technology
