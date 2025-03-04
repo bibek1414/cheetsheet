@@ -119,6 +119,8 @@ docker-compose logs    # View logs
   906  docker pull bibek1414/expensetracker
   907  docker run -d -p 8000:8000 bibek1414/expensetracker:latest\n
 ```
+
+
 # Docker Commands Cheat Sheet
 
 ## **Docker Volume Commands**
@@ -134,6 +136,21 @@ docker volume inspect bibek
 
 # Remove a volume
 docker volume rm bibek
+```
+
+## **Steps to Remove a Docker Volume in Use**
+```sh
+# Check running/stopped containers
+docker ps -a
+
+# Stop the container using the volume
+docker stop <container_id>
+
+# Remove the container
+docker rm <container_id>
+
+# Remove the volume
+docker volume rm <volume_name>
 ```
 
 ## **Docker Image Commands**
@@ -185,9 +202,4 @@ docker run -d -v bibek:/app a04dc4851cbc
 ```sh
 docker run -it --mount source=bibek,target=/app a04dc4851cbc /bin/sh
 ```
-
-
-
-
-
 
