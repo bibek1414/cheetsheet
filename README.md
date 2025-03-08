@@ -592,3 +592,20 @@ export async function getServerSideProps(context) {
 - Coursera
 - Udemy
 - Official documentation for each technology
+
+
+# Blanz DevOps Cheatsheet
+
+```sh
+vim pod.yml
+kubectl create -f pod.yml
+kubectl get pods
+kubectl get pods -o wide
+minikube ssh
+kubectl get pods
+kubectl delete pod nginx
+kubectl get pods
+kubectl apply -f pod.yml
+kubectl logs nginx
+kubectl describe pod nginx
+```
