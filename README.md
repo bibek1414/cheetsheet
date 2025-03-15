@@ -609,3 +609,162 @@ kubectl apply -f pod.yml
 kubectl logs nginx
 kubectl describe pod nginx
 ```
+# Kubernetes Ingress, ConfigMap & Secret Cheatsheet
+
+## Ingress Configuration
+### 1. Enable Ingress on Minikube
+```sh
+minikube addons enable ingress
+```
+
+### 2. Create an Ingress Resource
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /bar
+        pathType: Prefix
+        backend:
+          service:
+            name: example-service
+            port:
+              number: 80
+```
+
+### 3. Apply Ingress
+```sh
+kubectl apply -f ingress.yml
+```
+
+### 4. Verify Ingress
+```sh
+kubectl get ingress
+```
+
+### 5. Add Host to `/etc/hosts`
+```sh
+sudo vim /etc/hosts
+# Add the following line
+192.168.49.2 foo.bar.com
+```
+
+### 6. Test Access
+```sh
+curl -L http://foo.bar.com/bar
+```
+
+---
+
+## Kubernetes ConfigMap Configuration
+### 1. Create a ConfigMap from CLI
+```sh
+kubectl create configmap test-cm --from-literal=db-port="3307"
+```
+
+### 2. Describe ConfigMap
+```sh
+kubectl describe configmap test-cm
+```
+
+### 3. Apply ConfigMap from YAML
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-cm
+data:
+  db-port: "3307"
+```
+
+### 4. Use ConfigMap in Deployment as Environment Variable
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+spec:
+  template:
+    spec:
+      containers:
+      - name: python-app
+        image: bibek1414/python-sample-app-demo:v1
+        env:
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: test-cm
+                key: db-port
+```
+
+### 5. Use ConfigMap as a Volume
+```yaml
+volumeMounts:
+  - name: db-config
+    mountPath: /opt
+volumes:
+  - name: db-config
+    configMap:
+      name: test-cm
+```
+
+### 6. Apply Deployment
+```sh
+kubectl apply -f deployment.yml
+```
+
+---
+
+## Kubernetes Secret Configuration
+### 1. Create a Secret from CLI
+```sh
+kubectl create secret generic test-secret --from-literal=db-port="3306"
+```
+
+### 2. Describe Secret
+```sh
+kubectl describe secret test-secret
+```
+
+### 3. Edit Secret
+```sh
+kubectl edit secret test-secret
+```
+
+### 4. Decode Secret Value
+```sh
+echo MzMwNg== | base64 --decode
+```
+
+### 5. Use Secret in Deployment
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+spec:
+  template:
+    spec:
+      containers:
+      - name: python-app
+        image: bibek1414/python-sample-app-demo:v1
+        env:
+          - name: DB_PORT
+            valueFrom:
+              secretKeyRef:
+                name: test-secret
+                key: db-port
+```
+
+### 6. Apply Deployment
+```sh
+kubectl apply -f deployment.yml
+```
+
