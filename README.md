@@ -13,6 +13,8 @@ A comprehensive guide covering Linux, GitHub, Docker, Django, Python, JavaScript
 - [JavaScript](#-javascript)
 - [React](#-react)
 - [Next.js](#-nextjs)
+- [Kubernetes](#kubernetes)
+- [Prometheus & Grafana](#prometheus--grafana-cheat-sheet)
 
 ---
 
@@ -148,8 +150,7 @@ docker run -v /host/path:/container/path container_name
 ---
 
 ## 🌐 Docker Networking
-## 🔍 Basic Network Commands
-### List Docker Networks
+### 🔍 Basic Network Commands
 ```bash
 # List all networks
 docker network ls
@@ -159,10 +160,10 @@ docker network ls -q  # List network IDs
 docker network ls --filter "driver=bridge"  # Filter by driver
 ```
 
-## 🌉 Network Types in Depth
+### 🌉 Network Types in Depth
 
-### 1. Bridge Network (Default Network)
-#### Characteristics
+#### 1. Bridge Network (Default Network)
+**Characteristics**
 - Default network when no network is specified
 - Allows containers to communicate internally
 - Uses Network Address Translation (NAT) for external communication
@@ -179,13 +180,13 @@ docker network inspect bridge
 docker network inspect bridge | grep -A 10 Containers
 ```
 
-#### Network Details
+**Network Details**
 - Subnet: Typically 172.17.0.0/16
 - Gateway: Usually 172.17.0.1
 - DHCP-like IP assignment for containers
 
-### 2. Host Network
-#### Characteristics
+#### 2. Host Network
+**Characteristics**
 - Removes network isolation between container and host
 - Uses host's network stack directly
 - No network namespace separation
@@ -201,13 +202,13 @@ docker run -d --name host-demo \
 docker inspect host-demo | grep -i networkmode
 ```
 
-#### Use Cases
+**Use Cases**
 - High-performance networking
 - Network monitoring tools
 - When you need direct host network access
 
-### 3. Custom Bridge Network
-#### Advantages
+#### 3. Custom Bridge Network
+**Advantages**
 - Better isolation
 - Automatic DNS resolution
 - Containers can communicate by container names
@@ -230,9 +231,9 @@ docker run -d --name database \
 docker exec webapp ping database
 ```
 
-## 🔍 Network Inspection
+### 🔍 Network Inspection
 
-### Detailed Network Inspection
+**Detailed Network Inspection**
 ```bash
 # Inspect network details
 docker network inspect [network-name]
@@ -244,9 +245,9 @@ docker network inspect bridge -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}'
 docker inspect [container-name] | grep -i network
 ```
 
-## 🛠 Networking Management
+### 🛠 Networking Management
 
-### Advanced Network Operations
+**Advanced Network Operations**
 ```bash
 # Connect container to additional network
 docker network connect [network-name] [container-name]
@@ -262,9 +263,9 @@ docker network create \
   custom-network
 ```
 
-## 🚀 Advanced Networking
+### 🚀 Advanced Networking
 
-### Network Configuration
+**Network Configuration**
 ```bash
 # Create network with specific MTU
 docker network create \
@@ -279,9 +280,9 @@ docker run -d --name web \
   nginx:latest
 ```
 
-## 🔬 Troubleshooting Network Connectivity
+### 🔬 Troubleshooting Network Connectivity
 
-### Connectivity Tools
+**Connectivity Tools**
 ```bash
 # Install network tools in container
 docker exec -it container_name /bin/bash
@@ -294,9 +295,9 @@ traceroute other-container-name
 netstat -tuln  # List listening ports
 ```
 
-## 🛡️ Security Considerations
+### 🛡️ Security Considerations
 
-### Network Security Best Practices
+**Network Security Best Practices**
 ```bash
 # Disable inter-container communication
 docker network create \
@@ -307,30 +308,28 @@ docker network create \
 docker run --network=none  # No network access
 ```
 
-## 💡 Best Practices
+### 💡 Best Practices
 1. Use custom bridge networks for better isolation
 2. Avoid host network in production
 3. Implement network segmentation
 4. Use network aliases for service discovery
 5. Regularly audit network configurations
 
-## 📊 Performance Optimization
+### 📊 Performance Optimization
 - Minimize network hops
 - Use host network for performance-critical apps
 - Implement efficient routing
 - Monitor network performance
 
-## 🚨 Common Troubleshooting
+### 🚨 Common Troubleshooting
 - Check network configuration
 - Verify container network settings
 - Test connectivity between containers
 - Review Docker network logs
 
-## 🔧 Practical Example Workflow
+### 🔧 Practical Example Workflow
 
-# Docker Networking Commands Log
-
-## Commands Executed
+**Docker Networking Commands Log**
 
 ```sh
 cd Docker-Zero-to-Hero
@@ -370,28 +369,26 @@ docker stop $(docker ps -q)
 docker rm $(docker ps -a -q)
 ```
 
-## Summary
-
+**Summary**
 - Created and managed Docker containers (`login`, `logout`, `finance`, `host-demo`).
 - Created and listed Docker networks (`secure-network`).
 - Inspected containers and networks.
 - Ran containers with specific networks.
 - Stopped and removed all containers.
 
-This log can be used as a reference for Docker networking commands.
-
-## 💥 Common Pitfalls to Avoid
+### 💥 Common Pitfalls to Avoid
 - Using default bridge for production
 - Neglecting network security
 - Overlooking network performance
 - Incorrect port mappings
 - Lack of network monitoring
 
-## 📚 Recommended Learning
+### 📚 Recommended Learning
 - Docker official networking documentation
 - Network troubleshooting guides
 - Container networking best practices
 - Performance optimization techniques
+
 ---
 
 ## 🐍 Python
@@ -564,6 +561,234 @@ export async function getServerSideProps(context) {
 
 ---
 
+## Kubernetes
+### DevOps Cheatsheet
+```sh
+vim pod.yml
+kubectl create -f pod.yml
+kubectl get pods
+kubectl get pods -o wide
+minikube ssh
+kubectl get pods
+kubectl delete pod nginx
+kubectl get pods
+kubectl apply -f pod.yml
+kubectl logs nginx
+kubectl describe pod nginx
+```
+
+### Ingress, ConfigMap & Secret Cheatsheet
+
+#### Ingress Configuration
+```sh
+# Enable Ingress on Minikube
+minikube addons enable ingress
+
+# Apply Ingress
+kubectl apply -f ingress.yml
+
+# Verify Ingress
+kubectl get ingress
+
+# Add Host to /etc/hosts
+sudo vim /etc/hosts
+# Add the following line
+192.168.49.2 foo.bar.com
+
+# Test Access
+curl -L http://foo.bar.com/bar
+```
+
+**Example Ingress YAML**
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: foo.bar.com
+    http:
+      paths:
+      - path: /bar
+        pathType: Prefix
+        backend:
+          service:
+            name: example-service
+            port:
+              number: 80
+```
+
+#### Kubernetes ConfigMap
+```sh
+# Create a ConfigMap from CLI
+kubectl create configmap test-cm --from-literal=db-port="3307"
+
+# Describe ConfigMap
+kubectl describe configmap test-cm
+
+# Apply ConfigMap from YAML
+kubectl apply -f configmap.yml
+```
+
+**Example ConfigMap YAML**
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-cm
+data:
+  db-port: "3307"
+```
+
+**Use ConfigMap in Deployment**
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+spec:
+  template:
+    spec:
+      containers:
+      - name: python-app
+        image: bibek1414/python-sample-app-demo:v1
+        env:
+          - name: DB_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: test-cm
+                key: db-port
+```
+
+**Use ConfigMap as a Volume**
+```yaml
+volumeMounts:
+  - name: db-config
+    mountPath: /opt
+volumes:
+  - name: db-config
+    configMap:
+      name: test-cm
+```
+
+#### Kubernetes Secret Configuration
+```sh
+# Create a Secret from CLI
+kubectl create secret generic test-secret --from-literal=db-port="3306"
+
+# Describe Secret
+kubectl describe secret test-secret
+
+# Edit Secret
+kubectl edit secret test-secret
+
+# Decode Secret Value
+echo MzMwNg== | base64 --decode
+```
+
+**Use Secret in Deployment**
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-app
+spec:
+  template:
+    spec:
+      containers:
+      - name: python-app
+        image: bibek1414/python-sample-app-demo:v1
+        env:
+          - name: DB_PORT
+            valueFrom:
+              secretKeyRef:
+                name: test-secret
+                key: db-port
+```
+
+---
+
+## Prometheus & Grafana Cheat Sheet
+
+### Install and Setup
+```sh
+# Start Minikube
+minikube start
+
+# Install Helm
+sudo apt update
+sudo apt install helm
+
+# Or install via script
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# Check Helm version
+helm version
+```
+
+### Install Prometheus
+```sh
+# Add Helm Repository
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+
+# Install Prometheus
+helm install prometheus prometheus-community/prometheus
+
+# Check Installation
+kubectl get pods
+kubectl get svc
+kubectl get deploy
+
+# Expose Prometheus
+kubectl expose service prometheus-server --type=NodePort --target-port=9090 --name=prometheus-server-ext
+
+# Find Minikube IP
+minikube ip
+
+# Check exposed service
+kubectl get svc prometheus-server-ext
+```
+
+### Install Grafana
+```sh
+# Add Helm Repository
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+
+# Install Grafana
+helm install grafana grafana/grafana
+
+# Get Grafana Admin Password
+kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+
+# Expose Grafana
+kubectl expose service grafana --type=NodePort --target-port=3000 --name=grafana-ext
+
+# Find Minikube IP
+minikube ip
+
+# Check exposed service
+kubectl get svc
+```
+
+### Managing Resources
+```sh
+# List All Resources
+kubectl get all
+
+# Delete All Resources
+kubectl delete all --all
+
+# Stop Minikube
+minikube stop
+```
+
+---
+
 ## 💡 Best Practices & Tips
 - Always use virtual environments in Python
 - Follow PEP 8 guidelines for Python
@@ -592,286 +817,3 @@ export async function getServerSideProps(context) {
 - Coursera
 - Udemy
 - Official documentation for each technology
-
-
-# Blanz DevOps Cheatsheet
-
-```sh
-vim pod.yml
-kubectl create -f pod.yml
-kubectl get pods
-kubectl get pods -o wide
-minikube ssh
-kubectl get pods
-kubectl delete pod nginx
-kubectl get pods
-kubectl apply -f pod.yml
-kubectl logs nginx
-kubectl describe pod nginx
-```
-# Kubernetes Ingress, ConfigMap & Secret Cheatsheet
-
-## Ingress Configuration
-### 1. Enable Ingress on Minikube
-```sh
-minikube addons enable ingress
-```
-
-### 2. Create an Ingress Resource
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: example-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-spec:
-  rules:
-  - host: foo.bar.com
-    http:
-      paths:
-      - path: /bar
-        pathType: Prefix
-        backend:
-          service:
-            name: example-service
-            port:
-              number: 80
-```
-
-### 3. Apply Ingress
-```sh
-kubectl apply -f ingress.yml
-```
-
-### 4. Verify Ingress
-```sh
-kubectl get ingress
-```
-
-### 5. Add Host to `/etc/hosts`
-```sh
-sudo vim /etc/hosts
-# Add the following line
-192.168.49.2 foo.bar.com
-```
-
-### 6. Test Access
-```sh
-curl -L http://foo.bar.com/bar
-```
-
----
-
-## Kubernetes ConfigMap Configuration
-### 1. Create a ConfigMap from CLI
-```sh
-kubectl create configmap test-cm --from-literal=db-port="3307"
-```
-
-### 2. Describe ConfigMap
-```sh
-kubectl describe configmap test-cm
-```
-
-### 3. Apply ConfigMap from YAML
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: test-cm
-data:
-  db-port: "3307"
-```
-
-### 4. Use ConfigMap in Deployment as Environment Variable
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: python-app
-spec:
-  template:
-    spec:
-      containers:
-      - name: python-app
-        image: bibek1414/python-sample-app-demo:v1
-        env:
-          - name: DB_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: test-cm
-                key: db-port
-```
-
-### 5. Use ConfigMap as a Volume
-```yaml
-volumeMounts:
-  - name: db-config
-    mountPath: /opt
-volumes:
-  - name: db-config
-    configMap:
-      name: test-cm
-```
-
-### 6. Apply Deployment
-```sh
-kubectl apply -f deployment.yml
-```
-
----
-
-## Kubernetes Secret Configuration
-### 1. Create a Secret from CLI
-```sh
-kubectl create secret generic test-secret --from-literal=db-port="3306"
-```
-
-### 2. Describe Secret
-```sh
-kubectl describe secret test-secret
-```
-
-### 3. Edit Secret
-```sh
-kubectl edit secret test-secret
-```
-
-### 4. Decode Secret Value
-```sh
-echo MzMwNg== | base64 --decode
-```
-
-### 5. Use Secret in Deployment
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: python-app
-spec:
-  template:
-    spec:
-      containers:
-      - name: python-app
-        image: bibek1414/python-sample-app-demo:v1
-        env:
-          - name: DB_PORT
-            valueFrom:
-              secretKeyRef:
-                name: test-secret
-                key: db-port
-```
-
-### 6. Apply Deployment
-```sh
-kubectl apply -f deployment.yml
-```
-
-
-# Prometheus & Grafana Cheat Sheet
-
-## Install and Setup
-
-### Start Minikube
-```sh
-minikube start
-```
-
-### Install Helm
-```sh
-sudo apt update
-sudo apt install helm
-```
-Or install via script:
-```sh
-curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-```
-Check Helm version:
-```sh
-helm version
-```
-
-## Install Prometheus
-
-### Add Helm Repository
-```sh
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo update
-```
-
-### Install Prometheus
-```sh
-helm install prometheus prometheus-community/prometheus
-```
-
-### Check Installation
-```sh
-kubectl get pods
-kubectl get svc
-kubectl get deploy
-```
-
-### Expose Prometheus
-```sh
-kubectl expose service prometheus-server --type=NodePort --target-port=9090 --name=prometheus-server-ext
-```
-Find Minikube IP:
-```sh
-minikube ip
-```
-Check exposed service:
-```sh
-kubectl get svc prometheus-server-ext
-```
-
-## Install Grafana
-
-### Add Helm Repository
-```sh
-helm repo add grafana https://grafana.github.io/helm-charts
-helm repo update
-```
-
-### Install Grafana
-```sh
-helm install grafana grafana/grafana
-```
-
-### Get Grafana Admin Password
-```sh
-kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
-```
-
-### Expose Grafana
-```sh
-kubectl expose service grafana --type=NodePort --target-port=3000 --name=grafana-ext
-```
-Find Minikube IP:
-```sh
-minikube ip
-```
-Check exposed service:
-```sh
-kubectl get svc
-```
-
-## Managing Resources
-
-### List All Resources
-```sh
-kubectl get all
-```
-
-### Delete All Resources
-```sh
-kubectl delete all --all
-```
-
-### Stop Minikube
-```sh
-minikube stop
-```
-
-
-
