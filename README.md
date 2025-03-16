@@ -768,3 +768,110 @@ spec:
 kubectl apply -f deployment.yml
 ```
 
+
+# Prometheus & Grafana Cheat Sheet
+
+## Install and Setup
+
+### Start Minikube
+```sh
+minikube start
+```
+
+### Install Helm
+```sh
+sudo apt update
+sudo apt install helm
+```
+Or install via script:
+```sh
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+```
+Check Helm version:
+```sh
+helm version
+```
+
+## Install Prometheus
+
+### Add Helm Repository
+```sh
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+```
+
+### Install Prometheus
+```sh
+helm install prometheus prometheus-community/prometheus
+```
+
+### Check Installation
+```sh
+kubectl get pods
+kubectl get svc
+kubectl get deploy
+```
+
+### Expose Prometheus
+```sh
+kubectl expose service prometheus-server --type=NodePort --target-port=9090 --name=prometheus-server-ext
+```
+Find Minikube IP:
+```sh
+minikube ip
+```
+Check exposed service:
+```sh
+kubectl get svc prometheus-server-ext
+```
+
+## Install Grafana
+
+### Add Helm Repository
+```sh
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+```
+
+### Install Grafana
+```sh
+helm install grafana grafana/grafana
+```
+
+### Get Grafana Admin Password
+```sh
+kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+
+### Expose Grafana
+```sh
+kubectl expose service grafana --type=NodePort --target-port=3000 --name=grafana-ext
+```
+Find Minikube IP:
+```sh
+minikube ip
+```
+Check exposed service:
+```sh
+kubectl get svc
+```
+
+## Managing Resources
+
+### List All Resources
+```sh
+kubectl get all
+```
+
+### Delete All Resources
+```sh
+kubectl delete all --all
+```
+
+### Stop Minikube
+```sh
+minikube stop
+```
+
+
+
